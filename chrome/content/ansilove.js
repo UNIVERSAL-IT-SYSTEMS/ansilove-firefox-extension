@@ -1870,6 +1870,7 @@ var AnsiLove = (function () {
                 break;
             case "asc":
             case "nsk":
+            case "nfo":
                 anchors[i].onclick = createOnclickEvent(anchors[i], href, "asc");
                 break;
             case "adf":

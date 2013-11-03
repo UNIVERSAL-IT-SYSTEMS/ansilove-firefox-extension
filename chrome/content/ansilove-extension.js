@@ -8,9 +8,13 @@ var ansiloveExtension = (function () {
             if (href) {
                 switch (href.split(".").pop().toLowerCase()) {
                 case "ans":
+                case "tly":
                 case "asc":
+                case "nsk":
+                case "nfo":
                 case "adf":
                 case "bin":
+                case "diz":
                 case "idf":
                 case "pcb":
                 case "tnd":
