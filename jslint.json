@@ -6,10 +6,6 @@
     "predef": [
         "content",
         "Uint8Array",
-        "Uint32Array",
-        "FileReader",
-        "self",
-        "onmessage",
-        "postMessage",
+        "Uint32Array"
     ]
 }
