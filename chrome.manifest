@@ -1,0 +1,6 @@
+content     ansilove    chrome/content/
+content     ansilove    chrome/content/ contentaccessible=yes
+overlay chrome://browser/content/browser.xul chrome://ansilove/content/browser.xul
+
+skin	ansilove	classic/1.0	skin/
+style	chrome://global/content/customizeToolbar.xul	chrome://ansilove/skin/skin.css

@@ -1,0 +1,15 @@
+{
+    "bitwise": true,
+    "browser": true,
+    "devel": true,
+    "plusplus": true,
+    "predef": [
+        "content",
+        "Uint8Array",
+        "Uint32Array",
+        "FileReader",
+        "self",
+        "onmessage",
+        "postMessage",
+    ]
+}
