@@ -1767,7 +1767,7 @@ var AnsiLove = (function () {
     "use strict";
     var anchors, i, href;
 
-    function display(url) {
+    function display(url, filetype) {
         var divOverlay, divPreview;
 
         function findHighestZIndex() {
@@ -1845,16 +1845,17 @@ var AnsiLove = (function () {
                     document.body.removeChild(divOverlay);
                 };
                 divOverlay.appendChild(divPreview);
-            }, 100, {}, function () {
+            }, 100, {"bits": "9"}, function () {
                 document.body.removeChild(divOverlay);
             });
         }, 50);
     }
 
-    function createOnclickEvent(href) {
+    function createOnclickEvent(anchor, href, filetype) {
+        anchor.href = "#";
         return function (evt) {
             evt.preventDefault();
-            display(href);
+            display(href, filetype);
         };
     }
 
@@ -1864,15 +1865,33 @@ var AnsiLove = (function () {
         if (href) {
             switch (href.split(".").pop().toLowerCase()) {
             case "ans":
+            case "tly":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "ans");
+                break;
             case "asc":
+            case "nsk":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "asc");
+                break;
             case "adf":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "adf");
+                break;
             case "bin":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "bin");
+                break;
+            case "diz":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "diz");
+                break;
             case "idf":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "idf");
+                break;
             case "pcb":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "pcb");
+                break;
             case "tnd":
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "tnd");
+                break;
             case "xb":
-                anchors[i].onclick = createOnclickEvent(href);
-                anchors[i].href = "#";
+                anchors[i].onclick = createOnclickEvent(anchors[i], href, "xb");
                 break;
             }
         }
