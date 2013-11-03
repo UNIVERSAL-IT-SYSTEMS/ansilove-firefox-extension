@@ -1,12 +1,10 @@
 var ansiloveExtension = (function () {
     "use strict";
-
-    function pageLoad() {
-        var script, anchors, href, i, selectedAnchors;
+    function hasTextmodeLinks() {
+        var anchors, i, href;
         anchors = content.document.getElementsByTagName("a");
-        selectedAnchors = [];
         for (i = 0; i < anchors.length; ++i) {
-            href = anchors[i].getAttribute("href");
+            href = anchors[i].href;
             if (href) {
                 switch (href.split(".").pop().toLowerCase()) {
                 case "ans":
@@ -17,19 +15,20 @@ var ansiloveExtension = (function () {
                 case "pcb":
                 case "tnd":
                 case "xb":
-                    selectedAnchors.push(anchors[i]);
-                    break;
+                    return true;
                 }
             }
         }
-        if (selectedAnchors.length) {
+        return false;
+    }
+
+    function pageLoad() {
+        var script;
+        if (hasTextmodeLinks()) {
             script = content.document.createElement("script");
             script.setAttribute("type", "text/javascript");
             script.setAttribute("src", "chrome://ansilove/content/ansilove.js");
-            content.document.getElementsByTagName("head")[0].appendChild(script);
-            for (i = 0; i < selectedAnchors.length; ++i) {
-                selectedAnchors[i].setAttribute("href", "javascript:AnsiLoveFireFoxExtension.display(\"" + selectedAnchors[i].getAttribute("href") + "\")");
-            }
+            content.document.body.appendChild(script);
         }
     }
 

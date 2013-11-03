@@ -1783,76 +1783,75 @@ var AnsiLove = (function () {
     }
 }());
 
-var AnsiLoveFireFoxExtension = (function () {
+(function () {
     "use strict";
-
-    function findHighestZIndex() {
-        var elements, highest, i, zIndex;
-        elements = document.getElementsByTagName("*");
-        highest = 0;
-        for (i = 0; i < elements.length; ++i) {
-            zIndex = document.defaultView.getComputedStyle(elements[i], null).getPropertyValue("z-index");
-            if (zIndex > highest && zIndex !== "auto") {
-                highest = parseInt(zIndex, 10);
-            }
-        }
-        return highest;
-    }
-
-    function createDiv() {
-        var div;
-        div = document.createElement("div");
-        div.style.position = "relative";
-        div.style.backgroundImage = "none";
-        div.style.backgroundColor = "white";
-        div.style.cursor = "default";
-        div.style.color = "black";
-        div.style.font = "75% \"Lucida Grande\", \"Trebuchet MS\", Verdana, sans-serif";
-        div.style.float = "none";
-        div.style.margin = "0";
-        div.style.padding = "0";
-        div.style.border = "0px solid black";
-        div.style.display = "block";
-        div.style.opacity = "1.0";
-        div.style.borderRadius = "0";
-        div.style.boxShadow = "0 0 0 black";
-        return div;
-    }
-
-    function createDivOverlay() {
-        var divOverlay;
-        divOverlay = createDiv();
-        divOverlay.style.position = "fixed";
-        divOverlay.style.left = "0px";
-        divOverlay.style.top = "0px";
-        divOverlay.style.width = "100%";
-        divOverlay.style.height = "100%";
-        divOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-        divOverlay.style.overflow = "hidden";
-        divOverlay.style.zIndex = (findHighestZIndex() + 1).toString(10);
-        return divOverlay;
-    }
-
-    function createDivPreview(width) {
-        var divPreview;
-        divPreview = createDiv();
-        divPreview.style.margin = "16px auto";
-        divPreview.style.maxWidth = "90%";
-        divPreview.style.maxHeight = "90%";
-        divPreview.style.overflow = "scroll";
-        divPreview.style.width = width + "px";
-        divPreview.style.backgroundColor = "black";
-        divPreview.style.boxShadow = "0px 8px 32px rgba(0, 0, 0, 0.4)";
-        divPreview.style.border = "8px solid black";
-        return divPreview;
-    }
+    var anchors, i, href;
 
     function display(url) {
-        var divOverlay, divPreview, overflowSetting;
+        var divOverlay, divPreview;
+
+        function findHighestZIndex() {
+            var elements, highest, i, zIndex;
+            for (i = 0, elements = document.getElementsByTagName("*"), highest = 0; i < elements.length; ++i) {
+                zIndex = document.defaultView.getComputedStyle(elements[i]).zIndex;
+                if (zIndex !== "auto") {
+                    highest = Math.max(highest, parseInt(zIndex, 10));
+                }
+            }
+            return highest;
+        }
+
+        function createDiv() {
+            var div;
+            div = document.createElement("div");
+            div.style.position = "relative";
+            div.style.backgroundImage = "none";
+            div.style.backgroundColor = "white";
+            div.style.cursor = "default";
+            div.style.color = "black";
+            div.style.font = "75% \"Lucida Grande\", \"Trebuchet MS\", Verdana, sans-serif";
+            div.style.float = "none";
+            div.style.margin = "0";
+            div.style.padding = "0";
+            div.style.border = "0px solid black";
+            div.style.display = "block";
+            div.style.opacity = "1.0";
+            div.style.borderRadius = "0";
+            div.style.boxShadow = "0 0 0 black";
+            return div;
+        }
+
+        function createDivOverlay() {
+            var divOverlay;
+            divOverlay = createDiv();
+            divOverlay.style.position = "fixed";
+            divOverlay.style.left = "0px";
+            divOverlay.style.top = "0px";
+            divOverlay.style.width = "100%";
+            divOverlay.style.height = "100%";
+            divOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+            divOverlay.style.overflow = "hidden";
+            divOverlay.style.zIndex = (findHighestZIndex() + 1).toString(10);
+            return divOverlay;
+        }
+
+        function createDivPreview(width) {
+            var divPreview;
+            divPreview = createDiv();
+            divPreview.style.margin = "16px auto";
+            divPreview.style.maxWidth = "90%";
+            divPreview.style.maxHeight = "90%";
+            divPreview.style.overflow = "scroll";
+            divPreview.style.width = width + "px";
+            divPreview.style.backgroundColor = "black";
+            divPreview.style.boxShadow = "0px 8px 32px rgba(0, 0, 0, 0.4)";
+            divPreview.style.border = "8px solid black";
+            return divPreview;
+        }
+
         divOverlay = createDivOverlay();
         document.body.appendChild(divOverlay);
-        overflowSetting = document.defaultView.getComputedStyle(document.body, null).getPropertyValue("overflow");
-        document.body.overflow = "hidden";
+
         setTimeout(function () {
             AnsiLove.splitRender(url, function (canvases) {
                 divPreview = createDivPreview(canvases[0].width);
@@ -1864,17 +1863,38 @@ var AnsiLoveFireFoxExtension = (function () {
                 divOverlay.onclick = function (evt) {
                     evt.preventDefault();
                     document.body.removeChild(divOverlay);
-                    document.body.overflow = overflowSetting;
                 };
                 divOverlay.appendChild(divPreview);
             }, 100, {}, function () {
                 document.body.removeChild(divOverlay);
-                document.body.overflow = overflowSetting;
             });
         }, 50);
     }
 
-    return {
-        "display": display
-    };
+    function createOnclickEvent(href) {
+        return function (evt) {
+            evt.preventDefault();
+            display(href);
+        };
+    }
+
+    anchors = content.document.getElementsByTagName("a");
+    for (i = 0; i < anchors.length; ++i) {
+        href = anchors[i].href;
+        if (href) {
+            switch (href.split(".").pop().toLowerCase()) {
+            case "ans":
+            case "asc":
+            case "adf":
+            case "bin":
+            case "idf":
+            case "pcb":
+            case "tnd":
+            case "xb":
+                anchors[i].onclick = createOnclickEvent(href);
+                anchors[i].href = "#";
+                break;
+            }
+        }
+    }
 }());
