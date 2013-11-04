@@ -1851,10 +1851,11 @@
     }
 
     function createOnclickEvent(anchor, href, filetype) {
-        anchor.href = "#";
         return function (evt) {
-            evt.preventDefault();
-            display(href, filetype);
+            if (evt.shiftKey) {
+                evt.preventDefault();
+                display(href, filetype);
+            }
         };
     }
 

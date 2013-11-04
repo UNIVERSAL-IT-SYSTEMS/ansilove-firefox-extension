@@ -33,7 +33,7 @@ var ansiloveExtension = (function () {
         numberOfLinks = hasTextmodeLinks();
         notification = gBrowser.getNotificationBox();
         if (hasTextmodeLinks()) {
-            notification.appendNotification("AnsiLove: " + numberOfLinks + " links found.", "ansilove-notification", "chrome://browser/skin/Info.png", notification.PRIORITY_INFO_LOW, []);
+            notification.appendNotification("AnsiLove: " + numberOfLinks + " links found. Shift-click on a link to preview the image.", "ansilove-notification", "chrome://browser/skin/Info.png", notification.PRIORITY_INFO_LOW, []);
             script = content.document.createElement("script");
             script.setAttribute("type", "text/javascript");
             script.setAttribute("src", "chrome://ansilove/content/ansilove.js");
