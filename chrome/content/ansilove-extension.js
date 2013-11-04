@@ -1,5 +1,6 @@
 var ansiloveExtension = (function () {
     "use strict";
+    var notification = gBrowser.getNotificationBox();
 
     function hasTextmodeLinks() {
         var anchors, i, href, count;
@@ -28,18 +29,37 @@ var ansiloveExtension = (function () {
         return count;
     }
 
+    function notify(text) {
+        notification.appendNotification(text, "ansilove-notification", "chrome://browser/skin/Info.png", notification.PRIORITY_INFO_LOW, []);
+    }
+
+    function alreadyRunning() {
+        var scripts, i;
+        scripts = content.document.getElementsByTagName("script");
+        for (i = 0; i < scripts.length; ++i) {
+            if (scripts[i].src === "chrome://ansilove/content/ansilove.js") {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function filterLinks() {
         var numberOfLinks, notification, script;
         numberOfLinks = hasTextmodeLinks();
         notification = gBrowser.getNotificationBox();
-        if (hasTextmodeLinks()) {
-            notification.appendNotification("AnsiLove: " + numberOfLinks + " links found. Shift-click on a link to preview the image.", "ansilove-notification", "chrome://browser/skin/Info.png", notification.PRIORITY_INFO_LOW, []);
-            script = content.document.createElement("script");
-            script.setAttribute("type", "text/javascript");
-            script.setAttribute("src", "chrome://ansilove/content/ansilove.js");
-            content.document.body.appendChild(script);
+        if (alreadyRunning()) {
+            notify("AnsiLove is already loaded. Shift-click on a link to preview the image.");
         } else {
-            notification.appendNotification("Ansilove: Could not find any links.", "ansilove-notification", "chrome://browser/skin/Info.png", notification.PRIORITY_INFO_LOW, []);
+            if (hasTextmodeLinks()) {
+                notify("AnsiLove: " + numberOfLinks + " links found. Shift-click on a link to preview the image.");
+                script = content.document.createElement("script");
+                script.setAttribute("type", "text/javascript");
+                script.setAttribute("src", "chrome://ansilove/content/ansilove.js");
+                content.document.body.appendChild(script);
+            } else {
+                notify("Ansilove: Could not find any links.");
+            }
         }
     }
 
