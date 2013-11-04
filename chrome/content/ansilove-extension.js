@@ -36,9 +36,11 @@ var ansiloveExtension = (function () {
     function alreadyRunning() {
         var scripts, i;
         scripts = content.document.getElementsByTagName("script");
-        for (i = 0; i < scripts.length; ++i) {
-            if (scripts[i].src === "chrome://ansilove/content/ansilove.js") {
-                return true;
+        if (scripts.length) {
+            for (i = 0; i < scripts.length; ++i) {
+                if (scripts[i].src === "chrome://ansilove/content/ansilove.js") {
+                    return true;
+                }
             }
         }
         return false;
