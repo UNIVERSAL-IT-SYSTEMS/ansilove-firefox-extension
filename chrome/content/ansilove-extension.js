@@ -30,7 +30,7 @@ var ansiloveExtension = (function () {
     }
 
     function notify(text) {
-        notification.appendNotification(text, "ansilove-notification", "chrome://browser/skin/Info.png", notification.PRIORITY_INFO_LOW, []);
+        notification.appendNotification(text, "ansilove-notification", "chrome://ansilove/content/ansilove-icon.png", notification.PRIORITY_INFO_LOW, []);
     }
 
     function alreadyRunning() {
