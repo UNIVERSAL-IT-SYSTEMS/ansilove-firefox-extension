@@ -4,7 +4,9 @@ To build: `zip -r ansilove.xpi chrome.manifest install.rdf chrome/`
 
 In FireFox: Tools > Add-ons > Gears Icon > Install Add-on From File... > Choose the XPI file and install.
 
-Any web page with links to .ans, .asc, .ads, .bin, .idf, .pcb, .tnd, .xb,  will now open with a image preview instead of redirecting to a page or downloading the file from the server.
+You should now have a contextual menu, listed as "Filter Links With AnsiLove" when right-clicking a page.
+
+When sucessfully run, any web page with links to .ans, .asc, .ads, .bin, .idf, .pcb, .tnd, .xb,  will now open with a image preview instead of redirecting to a page or downloading the file from the server.
 
 Known issues:
 - urls pointing to pages are mistaken for images.

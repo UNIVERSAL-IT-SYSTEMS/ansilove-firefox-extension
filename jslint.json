@@ -6,6 +6,7 @@
     "predef": [
         "content",
         "Uint8Array",
-        "Uint32Array"
+        "Uint32Array",
+        "gBrowser"
     ]
 }
