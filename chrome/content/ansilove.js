@@ -1,6 +1,6 @@
 (function () {
     "use strict";
-    var AnsiLove, anchors, i, href;
+    var AnsiLove, anchors, i;
 
     AnsiLove = (function () {
         var Palette, Font;
@@ -1766,7 +1766,7 @@
         };
     }());
 
-    function display(url, filetype) {
+    function display(href) {
         var divOverlay, divPreview;
 
         function findHighestZIndex() {
@@ -1832,7 +1832,7 @@
         document.body.appendChild(divOverlay);
 
         setTimeout(function () {
-            AnsiLove.splitRender(url, function (canvases) {
+            AnsiLove.splitRender(href, function (canvases) {
                 divPreview = createDivPreview(canvases[0].width);
                 canvases.forEach(function (canvas) {
                     canvas.style.verticalAlign = "bottom";
@@ -1844,57 +1844,25 @@
                     document.body.removeChild(divOverlay);
                 };
                 divOverlay.appendChild(divPreview);
-            }, 100, {"bits": "9", "filetype": filetype}, function () {
+            }, 100, {"bits": "9", "filetype": href.split(".").pop().toLowerCase()}, function () {
                 document.body.removeChild(divOverlay);
             });
         }, 50);
     }
 
-    function createOnclickEvent(anchor, href, filetype) {
+    function createOnclickEvent(href) {
         return function (evt) {
             if (evt.shiftKey) {
                 evt.preventDefault();
-                display(href, filetype);
+                display(href);
             }
         };
     }
 
     anchors = content.document.getElementsByTagName("a");
     for (i = 0; i < anchors.length; ++i) {
-        href = anchors[i].href;
-        if (href) {
-            switch (href.split(".").pop().toLowerCase()) {
-            case "ans":
-            case "tly":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "ans");
-                break;
-            case "asc":
-            case "nsk":
-            case "nfo":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "asc");
-                break;
-            case "adf":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "adf");
-                break;
-            case "bin":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "bin");
-                break;
-            case "diz":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "diz");
-                break;
-            case "idf":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "idf");
-                break;
-            case "pcb":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "pcb");
-                break;
-            case "tnd":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "tnd");
-                break;
-            case "xb":
-                anchors[i].onclick = createOnclickEvent(anchors[i], href, "xb");
-                break;
-            }
+        if (anchors[i].href) {
+            anchors[i].onclick = createOnclickEvent(anchors[i].href);
         }
     }
 }());
