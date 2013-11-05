@@ -1,10 +1,5 @@
 var ansiloveExtension = (function () {
     "use strict";
-    var notification = gBrowser.getNotificationBox();
-
-    function notify(text) {
-        notification.appendNotification(text, "ansilove-notification", "chrome://ansilove/content/ansilove-icon.png", notification.PRIORITY_INFO_LOW, []);
-    }
 
     function alreadyRunning() {
         var scripts, i;
@@ -21,6 +16,11 @@ var ansiloveExtension = (function () {
 
     function filterLinks() {
         var notification, script;
+
+        function notify(text) {
+            notification.appendNotification(text, "ansilove-notification", "chrome://ansilove/content/ansilove-icon.png", notification.PRIORITY_INFO_LOW, []);
+        }
+
         notification = gBrowser.getNotificationBox();
         if (alreadyRunning()) {
             notify("AnsiLove is already loaded. Shift-click on any link to preview the image.");
