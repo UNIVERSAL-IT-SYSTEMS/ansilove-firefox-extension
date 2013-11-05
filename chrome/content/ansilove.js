@@ -1263,8 +1263,6 @@
                     default:
                         if (callbackFail) {
                             callbackFail(http.status);
-                        } else {
-                            throw ("Could not retrieve: " + url);
                         }
                     }
                 }
@@ -1724,12 +1722,20 @@
         return {
             "render": function (url, callback, options, callbackFail) {
                 httpGet(url, function (bytes) {
-                    render(url, bytes, callback, 0, options || {});
+                    try {
+                        render(url, bytes, callback, 0, options || {});
+                    } catch (e) {
+                        callbackFail(e);
+                    }
                 }, callbackFail);
             },
             "splitRender": function (url, callback, splitRows, options, callbackFail) {
                 httpGet(url, function (bytes) {
-                    render(url, bytes, callback, splitRows || 27, options || {});
+                    try {
+                        render(url, bytes, callback, splitRows || 27, options || {});
+                    } catch (e) {
+                        callbackFail(e);
+                    }
                 }, callbackFail);
             },
             "renderBytes": function (bytes, callback, options) {
@@ -1844,7 +1850,8 @@
                     document.body.removeChild(divOverlay);
                 };
                 divOverlay.appendChild(divPreview);
-            }, 100, {"bits": "9", "filetype": href.split(".").pop().toLowerCase()}, function () {
+            }, 100, {"bits": "9", "filetype": href.split(".").pop().toLowerCase()}, function (e) {
+                alert("Error: " + e);
                 document.body.removeChild(divOverlay);
             });
         }, 50);
