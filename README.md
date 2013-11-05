@@ -1,6 +1,6 @@
 Please read the `LICENSE`.
 
-To build: `zip -r ansilove.xpi chrome.manifest install.rdf chrome/`
+To build: `zip -r ansilove.xpi chrome.manifest install.rdf icon.png chrome/`
 
 In FireFox: Tools > Add-ons > Gears Icon > Install Add-on From File... > Choose the XPI file and install.
 
