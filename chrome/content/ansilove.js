@@ -1839,6 +1839,9 @@
                         controller.stop();
                         document.body.removeChild(divOverlay);
                     };
+                }, {}, function (e) {
+                    alert("Error: " + e);
+                    document.body.removeChild(divOverlay);
                 });
             } else {
                 AnsiLove.splitRender(href, function (canvases) {
