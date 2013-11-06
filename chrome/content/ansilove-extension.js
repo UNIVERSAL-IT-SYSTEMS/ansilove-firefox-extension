@@ -25,7 +25,7 @@ var ansiloveExtension = (function () {
         if (alreadyRunning()) {
             notify("AnsiLove is already loaded. Shift-click on any link to preview the image.");
         } else {
-            notify("Shift-click on any link to preview with AnsiLove.");
+            notify("Shift-click on any link to preview with AnsiLove. Alt-click to emulate a video terminal display.");
             script = content.document.createElement("script");
             script.setAttribute("type", "text/javascript");
             script.setAttribute("src", "chrome://ansilove/content/ansilove.js");

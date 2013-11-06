@@ -1772,7 +1772,7 @@
         };
     }());
 
-    function display(href) {
+    function display(href, animation) {
         var divOverlay, STYLE_DEFAULTS;
 
         STYLE_DEFAULTS = {"backgroundColor": "transparent", "backgroundImage": "none", "margin": "0", "padding": "0", "border": "0", "fontSize": "100", "font": "inherit", "verticalAlign": "baseline", "color": "black", "display": "block", "cursor": "default", "textAlign": "left", "textShadow": "none", "textTransform": "none", "clear": "none", "float": "none", "overflow": "auto", "position": "relative", "visibility": "visible"};
@@ -1822,23 +1822,43 @@
         transitionCSS(divOverlay, "opacity", "0.2s", "ease-out", {"opacity": "1.0"});
 
         setTimeout(function () {
-            AnsiLove.splitRender(href, function (canvases) {
-                canvases.forEach(function (canvas) {
+            var controller;
+            if (animation) {
+                controller = AnsiLove.animate(href, function (canvas) {
                     applyStyle(canvas, STYLE_DEFAULTS);
-                    applyStyle(canvas, {"verticalAlign": "bottom", "margin": "0 auto"});
+                    applyStyle(canvas, {"margin": "0 auto"});
                     canvas.style.imageRendering = "-moz-crisp-edges";
                     canvas.style.imageRendering = "-webkit-optimize-contrast";
                     divOverlay.appendChild(canvas);
+                    transitionCSS(divOverlay, "padding-top", "0.5s", "ease-in-out", {"paddingTop": "0"});
+                    setTimeout(function () {
+                        controller.play(28800);
+                    }, 750);
+                    divOverlay.onclick = function (evt) {
+                        evt.preventDefault();
+                        controller.stop();
+                        document.body.removeChild(divOverlay);
+                    };
                 });
-                transitionCSS(divOverlay, "padding-top", "0.5s", "ease-in-out", {"paddingTop": "0"});
-                divOverlay.onclick = function (evt) {
-                    evt.preventDefault();
+            } else {
+                AnsiLove.splitRender(href, function (canvases) {
+                    canvases.forEach(function (canvas) {
+                        applyStyle(canvas, STYLE_DEFAULTS);
+                        applyStyle(canvas, {"verticalAlign": "bottom", "margin": "0 auto"});
+                        canvas.style.imageRendering = "-moz-crisp-edges";
+                        canvas.style.imageRendering = "-webkit-optimize-contrast";
+                        divOverlay.appendChild(canvas);
+                    });
+                    transitionCSS(divOverlay, "padding-top", "0.5s", "ease-in-out", {"paddingTop": "0"});
+                    divOverlay.onclick = function (evt) {
+                        evt.preventDefault();
+                        document.body.removeChild(divOverlay);
+                    };
+                }, 100, {"bits": "9", "filetype": href.split(".").pop().toLowerCase()}, function (e) {
+                    alert("Error: " + e);
                     document.body.removeChild(divOverlay);
-                };
-            }, 100, {"bits": "9", "filetype": href.split(".").pop().toLowerCase()}, function (e) {
-                alert("Error: " + e);
-                document.body.removeChild(divOverlay);
-            });
+                });
+            }
         }, 250);
     }
 
@@ -1846,7 +1866,10 @@
         return function (evt) {
             if (evt.shiftKey) {
                 evt.preventDefault();
-                display(href);
+                display(href, false);
+            } else if (evt.altKey) {
+                evt.preventDefault();
+                display(href, true);
             }
         };
     }
