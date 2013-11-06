@@ -1773,7 +1773,9 @@
     }());
 
     function display(href) {
-        var divOverlay, divPreview;
+        var divOverlay, STYLE_DEFAULTS;
+
+        STYLE_DEFAULTS = {"backgroundColor": "transparent", "backgroundImage": "none", "margin": "0", "padding": "0", "border": "0", "fontSize": "100", "font": "inherit", "verticalAlign": "baseline", "color": "black", "display": "block", "cursor": "default", "textAlign": "left", "textShadow": "none", "textTransform": "none", "clear": "none", "float": "none", "overflow": "auto", "position": "relative", "visibility": "visible"};
 
         function findHighestZIndex() {
             var elements, highest, i, zIndex;
@@ -1786,75 +1788,58 @@
             return highest;
         }
 
-        function createDiv() {
+        function applyStyle(element, style) {
+            var name;
+            for (name in style) {
+                if (style.hasOwnProperty(name)) {
+                    element.style[name] = style[name];
+                }
+            }
+        }
+
+        function createDiv(style) {
             var div;
+            style = style || {};
             div = document.createElement("div");
-            div.style.position = "relative";
-            div.style.backgroundImage = "none";
-            div.style.backgroundColor = "white";
-            div.style.cursor = "default";
-            div.style.color = "black";
-            div.style.font = "75% \"Lucida Grande\", \"Trebuchet MS\", Verdana, sans-serif";
-            div.style.float = "none";
-            div.style.margin = "0";
-            div.style.padding = "0";
-            div.style.border = "0px solid black";
-            div.style.display = "block";
-            div.style.opacity = "1.0";
-            div.style.borderRadius = "0";
-            div.style.boxShadow = "0 0 0 black";
+            applyStyle(div, STYLE_DEFAULTS);
+            applyStyle(div, style);
             return div;
         }
 
-        function createDivOverlay() {
-            var divOverlay;
-            divOverlay = createDiv();
-            divOverlay.style.position = "fixed";
-            divOverlay.style.left = "0px";
-            divOverlay.style.top = "0px";
-            divOverlay.style.width = "100%";
-            divOverlay.style.height = "100%";
-            divOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-            divOverlay.style.overflow = "hidden";
-            divOverlay.style.zIndex = (findHighestZIndex() + 1).toString(10);
-            return divOverlay;
+        function transitionCSS(element, transProperty, transDuration, transFunction, style) {
+            element.style.transitionProperty = transProperty;
+            element.style.transitionDuration = transDuration;
+            element.style.transitionTimingFunction = transFunction;
+            if (style) {
+                setTimeout(function () {
+                    applyStyle(element, style);
+                }, 50);
+            }
         }
 
-        function createDivPreview(width) {
-            var divPreview;
-            divPreview = createDiv();
-            divPreview.style.margin = "16px auto";
-            divPreview.style.maxWidth = "90%";
-            divPreview.style.maxHeight = "90%";
-            divPreview.style.overflow = "scroll";
-            divPreview.style.width = width + "px";
-            divPreview.style.backgroundColor = "black";
-            divPreview.style.boxShadow = "0px 8px 32px rgba(0, 0, 0, 0.4)";
-            divPreview.style.border = "8px solid black";
-            return divPreview;
-        }
-
-        divOverlay = createDivOverlay();
+        divOverlay = createDiv({"position": "fixed", "left": "0px", "top": "0px", "width": "100%", "height": "100%", "backgroundColor": "rgba(0, 0, 0, 0.8)", "overflow": "scroll", "zIndex": (findHighestZIndex() + 1).toString(10), "opacity": "0", "paddingTop": "100%"});
         document.body.appendChild(divOverlay);
+        transitionCSS(divOverlay, "opacity", "0.2s", "ease-out", {"opacity": "1.0"});
 
         setTimeout(function () {
             AnsiLove.splitRender(href, function (canvases) {
-                divPreview = createDivPreview(canvases[0].width);
                 canvases.forEach(function (canvas) {
-                    canvas.style.verticalAlign = "bottom";
+                    applyStyle(canvas, STYLE_DEFAULTS);
+                    applyStyle(canvas, {"verticalAlign": "bottom", "margin": "0 auto"});
                     canvas.style.imageRendering = "-moz-crisp-edges";
-                    divPreview.appendChild(canvas);
+                    canvas.style.imageRendering = "-webkit-optimize-contrast";
+                    divOverlay.appendChild(canvas);
                 });
+                transitionCSS(divOverlay, "padding-top", "0.5s", "ease-in-out", {"paddingTop": "0"});
                 divOverlay.onclick = function (evt) {
                     evt.preventDefault();
                     document.body.removeChild(divOverlay);
                 };
-                divOverlay.appendChild(divPreview);
             }, 100, {"bits": "9", "filetype": href.split(".").pop().toLowerCase()}, function (e) {
                 alert("Error: " + e);
                 document.body.removeChild(divOverlay);
             });
-        }, 50);
+        }, 250);
     }
 
     function createOnclickEvent(href) {
@@ -1866,7 +1851,7 @@
         };
     }
 
-    anchors = content.document.getElementsByTagName("a");
+    anchors = document.getElementsByTagName("a");
     for (i = 0; i < anchors.length; ++i) {
         if (anchors[i].href) {
             anchors[i].onclick = createOnclickEvent(anchors[i].href);
