@@ -1773,7 +1773,7 @@
     }());
 
     function display(href, animation) {
-        var divOverlay, STYLE_DEFAULTS;
+        var divOverlay, divCanvasContainer, STYLE_DEFAULTS;
 
         STYLE_DEFAULTS = {"backgroundColor": "transparent", "backgroundImage": "none", "margin": "0", "padding": "0", "border": "0", "fontSize": "100", "font": "inherit", "verticalAlign": "baseline", "color": "black", "display": "block", "cursor": "default", "textAlign": "left", "textShadow": "none", "textTransform": "none", "clear": "none", "float": "none", "overflow": "auto", "position": "relative", "visibility": "visible"};
 
@@ -1817,7 +1817,9 @@
             }
         }
 
-        divOverlay = createDiv({"position": "fixed", "left": "0px", "top": "0px", "width": "100%", "height": "100%", "backgroundColor": "rgba(0, 0, 0, 0.8)", "overflow": "scroll", "zIndex": (findHighestZIndex() + 1).toString(10), "opacity": "0", "paddingTop": "100%"});
+        divOverlay = createDiv({"position": "fixed", "left": "0px", "top": "0px", "width": "100%", "height": "100%", "backgroundColor": "rgba(0, 0, 0, 0.8)", "overflow": "scroll", "zIndex": (findHighestZIndex() + 1).toString(10), "opacity": "0"});
+        divCanvasContainer = createDiv({"backgroundColor": "black", "boxShadow": "0 8px 32px rgb(0, 0, 0)", "margin": "8px auto", "padding": "16px", "border": "4px solid white", "borderRadius": "32px", "top": "100%", "opacity": "0"});
+        divOverlay.appendChild(divCanvasContainer);
         document.body.appendChild(divOverlay);
         transitionCSS(divOverlay, "opacity", "0.2s", "ease-out", {"opacity": "1.0"});
 
@@ -1825,34 +1827,34 @@
             var controller;
             if (animation) {
                 controller = AnsiLove.animate(href, function (canvas) {
+                    divCanvasContainer.style.width = canvas.width + "px";
                     applyStyle(canvas, STYLE_DEFAULTS);
-                    applyStyle(canvas, {"margin": "0 auto"});
                     canvas.style.imageRendering = "-moz-crisp-edges";
                     canvas.style.imageRendering = "-webkit-optimize-contrast";
-                    divOverlay.appendChild(canvas);
-                    transitionCSS(divOverlay, "padding-top", "0.5s", "ease-in-out", {"paddingTop": "0"});
+                    divCanvasContainer.appendChild(canvas);
+                    transitionCSS(divCanvasContainer, "top, opacity", "0.6s, 1s", "ease-in-out, ease-out", {"top": "0", "opacity": "1"});
                     setTimeout(function () {
                         controller.play(28800);
-                    }, 750);
+                    }, 1000);
                     divOverlay.onclick = function (evt) {
                         evt.preventDefault();
                         controller.stop();
                         document.body.removeChild(divOverlay);
                     };
-                }, {}, function (e) {
+                }, {"bits": "9"}, function (e) {
                     alert("Error: " + e);
                     document.body.removeChild(divOverlay);
                 });
             } else {
                 AnsiLove.splitRender(href, function (canvases) {
+                    divCanvasContainer.style.width = canvases[0].width + "px";
                     canvases.forEach(function (canvas) {
                         applyStyle(canvas, STYLE_DEFAULTS);
-                        applyStyle(canvas, {"verticalAlign": "bottom", "margin": "0 auto"});
                         canvas.style.imageRendering = "-moz-crisp-edges";
                         canvas.style.imageRendering = "-webkit-optimize-contrast";
-                        divOverlay.appendChild(canvas);
+                        divCanvasContainer.appendChild(canvas);
                     });
-                    transitionCSS(divOverlay, "padding-top", "0.5s", "ease-in-out", {"paddingTop": "0"});
+                    transitionCSS(divCanvasContainer, "top, opacity", "0.6s, 1s", "ease-in-out, ease-out", {"top": "0", "opacity": "1"});
                     divOverlay.onclick = function (evt) {
                         evt.preventDefault();
                         document.body.removeChild(divOverlay);
