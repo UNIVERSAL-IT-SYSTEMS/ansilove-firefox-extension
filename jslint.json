@@ -4,6 +4,8 @@
     "devel": true,
     "plusplus": true,
     "predef": [
+        "self",
+        "AnsiLove",
         "content",
         "Uint8Array",
         "Uint32Array",
