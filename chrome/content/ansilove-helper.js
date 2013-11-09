@@ -4,12 +4,14 @@
 
     function createOnclickEvent(href) {
         return function (evt) {
+            var options;
+            options = {"bits": "9", "spinner": "chrome://ansilove/content/spinner.gif"};
             if (evt.shiftKey) {
                 evt.preventDefault();
-                AnsiLove.popup(href);
+                AnsiLove.popup(href, options);
             } else if (evt.altKey) {
                 evt.preventDefault();
-                AnsiLove.popupAnimation(href, 28800);
+                AnsiLove.popupAnimation(href, 28800, options);
             }
         };
     }
