@@ -5,7 +5,7 @@
     function createOnclickEvent(href) {
         return function (evt) {
             var options;
-            options = {"bits": "9", "spinner": "chrome://ansilove/content/spinner.gif"};
+            options = {"bits": "9", "spinner": "chrome://ansilove/content/spinner.gif", "2x": (window.devicePixelRatio > 1) ? 1 : 0};
             if (evt.shiftKey) {
                 evt.preventDefault();
                 AnsiLove.popup(href, options);
